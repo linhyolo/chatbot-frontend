@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Chatbot Ngữ Pháp - Allezy</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f5f5;
+      font-family: sans-serif;
+      background-color: #f9f9f9;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
     header {
       background-color: #E74C3C;
@@ -23,19 +22,19 @@
       margin-right: 15px;
     }
     main {
-      padding: 20px;
+      margin-top: 20px;
     }
-    .chat-container {
-      border: 1px solid #ccc;
-      border-radius: 8px;
+    input, button {
+      font-size: 1rem;
       padding: 10px;
-      background-color: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-    .chatbot-frame {
-      width: 100%;
-      height: 600px;
-      border: none;
+    #response {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -44,10 +43,35 @@
     <img src="https://allezy.vn/wp-content/uploads/2021/07/logo-allezy.png" alt="Allezy Logo">
     <h1>Chatbot Ngữ Pháp Tiếng Pháp</h1>
   </header>
+
   <main>
-    <div class="chat-container">
-      <iframe class="chatbot-frame" src="https://chatbot-ngu-phap.onrender.com"></iframe>
-    </div>
+    <input type="text" id="question" placeholder="Nhập câu hỏi ngữ pháp tiếng Pháp..." size="50">
+    <button onclick="sendQuestion()">Gửi</button>
+
+    <div id="response"></div>
   </main>
+
+  <script>
+    async function sendQuestion() {
+      const question = document.getElementById("question").value;
+      const responseDiv = document.getElementById("response");
+      responseDiv.textContent = "⏳ Đang xử lý...";
+
+      try {
+        const res = await fetch("https://chatbot-ngu-phap.onrender.com/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+
+        if (!res.ok) throw new Error("Lỗi khi gọi API");
+
+        const data = await res.json();
+        responseDiv.textContent = "🤖 " + data.answer;
+      } catch (err) {
+        responseDiv.textContent = "⚠️ Lỗi: " + err.message;
+      }
+    }
+  </script>
 </body>
 </html>
